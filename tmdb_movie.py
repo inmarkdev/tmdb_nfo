@@ -5,6 +5,15 @@ import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from tmdbv3api import TMDb, Movie, Search
 
+# 配置文件 config.ini
+"""
+[tmdb]
+# 你的 TMDb API Key，必须填写，从 https://www.themoviedb.org/ 申请
+api_key = 你的TMDbAPIKey
+# 语言设置，默认为中文简体，支持 TMDb 支持的语言代码，例如 zh-CN、en-US
+language = zh-CN
+"""
+
 class MovieNfoGenerator:
     """
     电影 NFO 信息生成器
