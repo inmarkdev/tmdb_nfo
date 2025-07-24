@@ -7,7 +7,7 @@ from tmdbv3api import TMDb, TV, Search, Season, Episode
 import requests
 
 # 配置文件 config.ini
-```
+"""
 [tmdb]
 # 你的 TMDb API Key，必须填写，从 https://www.themoviedb.org/ 申请
 api_key = 你的TMDbAPIKey
@@ -17,7 +17,7 @@ language = zh-CN
 generate_tvshow_nfo = true
 # 是否生成 season.nfo 文件，true 生成，false 不生成
 generate_season_nfo = true
-```
+"""
 
 class TVShowNfoGenerator:
     """
