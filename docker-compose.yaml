@@ -1,0 +1,13 @@
+services:
+  tmdb-nfo:
+    image: tmdb-nfo
+    container_name: tmdb-nfo
+    stdin_open: true
+    tty: true
+    volumes:
+      - /media:/media # 媒体路径
+    environment:
+      TMDB_API_KEY: "tmdbapikey"
+      DOWNLOAD_IMAGES: "False"  # 下载封面等图片 默认下载 true
+      DOWNLOAD_ACTOR_IMAGES: "False"  # 下载演员头像等图片 默认下载 true
+      MEDIA_PATH: "/media"
