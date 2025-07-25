@@ -17,7 +17,13 @@ language = zh-CN
 generate_tvshow_nfo = true
 # 是否生成 season.nfo 文件，true 生成，false 不生成
 generate_season_nfo = true
+
+[proxy]
+# 添加代理
+http = http://127.0.0.1:7890
+https = http://127.0.0.1:7890
 """
+
 
 class TVShowNfoGenerator:
     """
@@ -38,6 +44,20 @@ class TVShowNfoGenerator:
         self.language = self.config.get('tmdb', 'language', fallback='zh-CN')
         self.tvshow_nfo = self.config.getboolean('tmdb', 'generate_tvshow_nfo', fallback=True)
         self.season_nfo = self.config.getboolean('tmdb', 'generate_season_nfo', fallback=True)
+
+        # 读取代理配置
+        self.proxies = None
+        if 'proxy' in self.config:
+            self.proxies = {
+                'http': self.config['proxy'].get('http', None),
+                'https': self.config['proxy'].get('https', None)
+            }
+            self.proxies = {k: v for k, v in self.proxies.items() if v}
+            # 设置环境变量，供 tmdbv3api 使用
+            if 'http' in self.proxies:
+                os.environ['HTTP_PROXY'] = self.proxies['http']
+            if 'https' in self.proxies:
+                os.environ['HTTPS_PROXY'] = self.proxies['https']
 
         # 初始化 TMDb 和相关 API 实例
         self.tmdb = TMDb()
@@ -99,7 +119,7 @@ class TVShowNfoGenerator:
         url = f"https://api.themoviedb.org/3/tv/{tv_id}"
         params = {'api_key': self.api_key, 'language': self.language}
         try:
-            resp = requests.get(url, params=params, timeout=10)
+            resp = requests.get(url, params=params, timeout=10, proxies=self.proxies)
             resp.raise_for_status()
             return resp.json()
         except Exception as e:
@@ -115,7 +135,7 @@ class TVShowNfoGenerator:
         url = f"https://api.themoviedb.org/3/tv/{tv_id}/aggregate_credits"
         params = {'api_key': self.api_key, 'language': self.language}
         try:
-            resp = requests.get(url, params=params, timeout=10)
+            resp = requests.get(url, params=params, timeout=10, proxies=self.proxies)
             resp.raise_for_status()
             return resp.json()
         except Exception as e:
