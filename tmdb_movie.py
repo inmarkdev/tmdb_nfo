@@ -12,6 +12,11 @@ from tmdbv3api import TMDb, Movie, Search
 api_key = 你的TMDbAPIKey
 # 语言设置，默认为中文简体，支持 TMDb 支持的语言代码，例如 zh-CN、en-US
 language = zh-CN
+
+[proxy]
+# 代理
+http = http://127.0.0.1:7890
+https = http://127.0.0.1:7890
 """
 
 class MovieNfoGenerator:
@@ -31,6 +36,20 @@ class MovieNfoGenerator:
         # 读取 TMDb API Key 和语言设置
         self.api_key = self.config['tmdb']['api_key']
         self.language = self.config.get('tmdb', 'language', fallback='zh-CN')
+
+        # 读取代理配置
+        self.proxies = None
+        if 'proxy' in self.config:
+            self.proxies = {
+                'http': self.config['proxy'].get('http', None),
+                'https': self.config['proxy'].get('https', None)
+            }
+            self.proxies = {k: v for k, v in self.proxies.items() if v}
+            # 设置环境变量，供 tmdbv3api 使用
+            if 'http' in self.proxies:
+                os.environ['HTTP_PROXY'] = self.proxies['http']
+            if 'https' in self.proxies:
+                os.environ['HTTPS_PROXY'] = self.proxies['https']
 
         # 初始化 TMDb API
         self.tmdb = TMDb()
